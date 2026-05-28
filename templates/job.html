@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ company | title }} — {{ position | title }}</title>
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        background: #f0f4f8;
+        color: #1e293b;
+        min-height: 100vh;
+    }
+
+    header {
+        background: #1e3a5f;
+        padding: 0 32px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header > div {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .back-link {
+        color: #94b8d8;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    .header-titles { flex: 1; }
+
+    header h1 {
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.01em;
+        text-transform: capitalize;
+    }
+
+    header p {
+        color: #94b8d8;
+        font-size: 0.82rem;
+        margin-top: 3px;
+        text-transform: capitalize;
+    }
+
+    .container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 36px 20px;
+    }
+
+    /* Status badge */
+    .status-badge {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        border-radius: 20px;
+        padding: 3px 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .status-not-applied  { background: #f1f5f9; color: #64748b; }
+    .status-applied      { background: #e0f2fe; color: #0369a1; }
+    .status-interview    { background: #fef3c7; color: #b45309; }
+    .status-offer        { background: #dcfce7; color: #15803d; }
+    .status-reject       { background: #fee2e2; color: #b91c1c; }
+
+    /* Main detail card */
+    .detail-card {
+        background: #fff;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        border-top: 4px solid #0ea5e9;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 24px 28px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .card-company {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        text-transform: capitalize;
+    }
+
+    .card-position {
+        font-size: 0.9rem;
+        color: #475569;
+        text-transform: capitalize;
+        margin-top: 4px;
+    }
+
+    .card-body {
+        padding: 24px 28px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px 28px;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 4px; }
+
+    .field-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .field-value {
+        font-size: 0.9rem;
+        color: #1e293b;
+        text-transform: capitalize;
+    }
+
+    .field-value.salary::before { content: "$"; }
+
+    .field-value a {
+        color: #0ea5e9;
+        text-decoration: none;
+        word-break: break-all;
+        text-transform: none;
+    }
+
+    .field-value a:hover { text-decoration: underline; }
+
+    .field-value.empty { color: #94a3b8; font-style: italic; }
+
+    /* Description / Note full-width rows */
+    .full-width { grid-column: 1 / -1; }
+
+    .field-value.multiline {
+        white-space: pre-wrap;
+        line-height: 1.55;
+        text-transform: none;
+    }
+
+    .empty-state {
+        padding: 48px 28px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <a class="back-link" href="/">&larr; Back</a>
+        <div class="header-titles">
+            <h1>{{ company }} — {{ position }}</h1>
+            <p>{{ location }}</p>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    {% if job %}
+    {% set j = job[0] %}
+    <div class="detail-card">
+        <div class="card-header">
+            <div>
+                <div class="card-company">{{ j.company }}</div>
+                <div class="card-position">{{ j.position }} &middot; {{ j.level }}</div>
+            </div>
+            {% set s = j.status | lower | replace(" ", "-") %}
+            <span class="status-badge status-{{ s }}">{{ j.status }}</span>
+        </div>
+
+        <div class="card-body">
+            <div class="field-group">
+                <span class="field-label">Location</span>
+                <span class="field-value">{{ j.location or "—" }}</span>
+            </div>
+
+            <div class="field-group">
+                <span class="field-label">Level</span>
+                <span class="field-value">{{ j.level or "—" }}</span>
+            </div>
+
+            <div class="field-group">
+                <span class="field-label">Salary</span>
+                <span class="field-value {% if j.salary %}salary{% endif %}">
+                    {% if j.salary %}{{ "{:,}".format(j.salary | int) }}{% else %}—{% endif %}
+                </span>
+            </div>
+
+            <div class="field-group">
+                <span class="field-label">Date Applied</span>
+                <span class="field-value">{{ j.date_applied or "—" }}</span>
+            </div>
+
+            <div class="field-group">
+                <span class="field-label">Posting Link</span>
+                <span class="field-value">
+                    {% if j.posting_link %}
+                    <a href="{{ j.posting_link }}" target="_blank" rel="noopener">View Posting</a>
+                    {% else %}—{% endif %}
+                </span>
+            </div>
+
+            <div class="field-group full-width">
+                <span class="field-label">Job Description</span>
+                <span class="field-value multiline">{{ j.description or "No description provided." }}</span>
+            </div>
+
+            <div class="field-group full-width">
+                <span class="field-label">Notes</span>
+                <span class="field-value multiline {% if not j.note %}empty{% endif %}">
+                    {{ j.note or "No notes." }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="detail-card">
+        <div class="empty-state">No details found for this job application.</div>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

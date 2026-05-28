@@ -23,6 +23,10 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
         }
 
         header h1 {
@@ -38,99 +42,30 @@
             margin-top: 3px;
         }
 
+        .btn-new {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #0ea5e9;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            padding: 9px 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            transition: background 0.15s;
+            flex-shrink: 0;
+        }
+
+        .btn-new:hover { background: #0284c7; }
+
         .container {
             max-width: 1100px;
             margin: 0 auto;
             padding: 36px 20px;
         }
-
-        /* Form card */
-        .form-card {
-            background: #fff;
-            border-radius: 6px;
-            padding: 28px 32px;
-            border: 1px solid #cbd5e1;
-            border-top: 4px solid #0ea5e9;
-            margin-bottom: 40px;
-        }
-
-        .form-card h2 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #1e3a5f;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 16px;
-        }
-
-        .form-field {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        label {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-        }
-
-        label:has(+ [required])::after,
-        label:has(+ select[required])::after {
-            content: " *";
-            color: #ef4444;
-        }
-
-        input, select {
-            padding: 9px 11px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: #1e293b;
-            background: #fff;
-            transition: border-color 0.15s, box-shadow 0.15s;
-            width: 100%;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgba(14,165,233,0.15);
-        }
-
-        input::placeholder { color: #94a3b8; }
-
-        .form-footer {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: flex-end;
-            padding-top: 8px;
-            border-top: 1px solid #e2e8f0;
-            margin-top: 4px;
-        }
-
-        .btm_add {
-            background: #1e3a5f;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            padding: 10px 28px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            letter-spacing: 0.03em;
-            transition: background 0.15s;
-        }
-
-        .btm_add:hover { background: #0ea5e9; }
 
         /* Job cards */
         .section-title {
@@ -180,6 +115,12 @@
             font-size: 0.82rem;
             color: #475569;
             text-transform: capitalize;
+        }
+
+        .card-location {
+            font-size: 0.82rem;
+            color: #475569;
+            text-transform: capitalize;
             margin-bottom: 12px;
         }
 
@@ -211,72 +152,24 @@
     <body>
     <header>
         <div>
-            <h1>Job Tracker</h1>
-            <p>Store and manage your job applications</p>
+            <div>
+                <h1>Job Tracker</h1>
+                <p>Store and manage your job applications</p>
+            </div>
+            <a class="btn-new" href="{{ url_for('show_add_form') }}">+ New Application</a>
         </div>
     </header>
 
     <div class="container">
-        <div class="form-card">
-            <h2>Add New Job Application</h2>
-            <form id="applicationForm">
-                <div class="form-grid">
-                    <div class="form-field">
-                        <label>Company name</label>
-                        <input name="company" placeholder="e.g. Apple" required>
-                    </div>
-                    <div class="form-field">
-                        <label>Position</label>
-                        <input name="position" placeholder="e.g. Software Engineer" required>
-                    </div>
-                    <div class="form-field">
-                        <label>Location</label>
-                        <input name="location" placeholder="e.g. San Francisco" required>
-                    </div>
-                    <div class="form-field">
-                        <label>Status</label>
-                        <select name="status" required>
-                            <option value="" disabled selected>Select status</option>
-                            <option value="Not Applied">Not Applied</option>
-                            <option value="Applied">Applied</option>
-                            <option value="Interview">Interview</option>
-                            <option value="Offer">Offer</option>
-                            <option value="Reject">Reject</option>
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label>Apply Date</label>
-                        <input name="date_applied" type="date" required>
-                    </div>
-                    <div class="form-field">
-                        <label>Salary</label>
-                        <input name="salary" placeholder="e.g. $100,000" required>
-                    </div>
-                    <div class="form-field">
-                        <label>Posting Link</label>
-                        <input name="posting_link" placeholder="e.g. https://company.com/jobs/123">
-                    </div>
-                    <div class="form-field">
-                        <label>Note</label>
-                        <input name="note" placeholder="e.g. Follow up needed">
-                    </div>
-                    <div class="form-footer">
-                        <button type="submit" class="btm_add">Add Application</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-
-
-        <div class="section-title">Company and Position</div>
+        <div class="section-title">Applications</div>
         <div class="grid">
             {% for job in jobs %}
             <div class="card">
-                <a class="company-card" href="/job/{{job.company}}/{{job.position}}">{{ job.company }}</a>
+                <a class="company-card" href="{{ url_for('get_job_details', company=job.company, position=job.position, location=job.location) }}">{{ job.company }}</a>
                 <p class="card-position">{{ job.position }}</p>
+                <p class="card-location">{{ job.location }}</p>
                 <div class="card-footer">
-                    <span class="app-badge">{{ job.application_count }} {{ 'application' if job.application_count == 1 else 'applications' }}</span>
+                    <span class="app-badge">{{ job.status }} </span>
                 </div>
             </div>
             {% else %}
@@ -285,42 +178,5 @@
         </div>
     </div>
 
-    <script>
-        async function submitJob(force = false) {
-            const form = document.getElementById("applicationForm");
-            const formData = new FormData(form);
-            if (force) formData.set("force", "true");
-            const response = await fetch("/add", { method: "POST", body: formData });
-            const data = await response.json();
-            if (response.status === 409 && data.duplicate) {
-                showDuplicateDialog(data.message);
-            } else if (!response.ok) {
-                alert(data.error);
-            } else {
-                window.location.href = "/";
-            }
-        }
-
-        function showDuplicateDialog(message) {
-            const dialog = document.createElement("div");
-            dialog.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;";
-            dialog.innerHTML = `
-                <div style="background:#fff;padding:24px;border-radius:8px;max-width:420px;width:90%;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-                    <p style="margin:0 0 20px;font-size:15px;">${message}</p>
-                    <div style="display:flex;gap:12px;justify-content:flex-end;">
-                        <button id="dlg-no" style="padding:8px 20px;cursor:pointer;">No</button>
-                        <button id="dlg-yes" style="padding:8px 20px;cursor:pointer;background:#007bff;color:#fff;border:none;border-radius:4px;">Yes</button>
-                    </div>
-                </div>`;
-            document.body.appendChild(dialog);
-            document.getElementById("dlg-yes").onclick = () => { document.body.removeChild(dialog); submitJob(true); };
-            document.getElementById("dlg-no").onclick = () => document.body.removeChild(dialog);
-        }
-
-        document.getElementById("applicationForm").addEventListener("submit", function(e) {
-            e.preventDefault();
-            submitJob();
-        });
-    </script>
     </body>
 </html>
