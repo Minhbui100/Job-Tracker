@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit — {{ job.company | title }} {{ job.position | title }}</title>
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        background: #f0f4f8;
+        color: #1e293b;
+        min-height: 100vh;
+    }
+
+    header {
+        background: #1e3a5f;
+        padding: 0 32px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header > div {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .back-link {
+        color: #94b8d8;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 500;
+        white-space: nowrap;
+        transition: color 0.15s;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    .header-titles { flex: 1; }
+
+    header h1 {
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.01em;
+    }
+
+    header p {
+        color: #94b8d8;
+        font-size: 0.82rem;
+        margin-top: 3px;
+        text-transform: capitalize;
+    }
+
+    .container {
+        max-width: 860px;
+        margin: 40px auto;
+        padding: 0 16px;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 6px;
+        padding: 28px 32px;
+        border: 1px solid #cbd5e1;
+        border-top: 4px solid #f59e0b;
+    }
+
+    .form-card h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e3a5f;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .full-width { grid-column: 1 / -1; }
+
+    label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    label:has(+ [required])::after,
+    label:has(+ select[required])::after {
+        content: " *";
+        color: #ef4444;
+    }
+
+    input, select, textarea {
+        padding: 9px 11px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #1e293b;
+        background: #fff;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        width: 100%;
+        font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+    }
+
+    input::placeholder, textarea::placeholder { color: #94a3b8; }
+
+    textarea { resize: vertical; line-height: 1.5; }
+
+    .file-input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    input[type="file"] {
+        padding: 6px 8px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #475569;
+        background: #f8fafc;
+        cursor: pointer;
+    }
+
+    input[type="file"]:focus {
+        outline: none;
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+    }
+
+    .cv-current {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: #475569;
+    }
+
+    .cv-current a { color: #0ea5e9; text-decoration: none; }
+    .cv-current a:hover { text-decoration: underline; }
+
+    .cv-remove-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.78rem;
+        color: #b91c1c;
+        cursor: pointer;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .file-hint {
+        font-size: 0.72rem;
+        color: #94a3b8;
+    }
+
+    .readonly-value {
+        padding: 9px 11px;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #64748b;
+        background: #f8fafc;
+        text-transform: capitalize;
+        user-select: none;
+    }
+
+    .section-divider {
+        grid-column: 1 / -1;
+        border: none;
+        border-top: 1px solid #e2e8f0;
+        margin: 4px 0;
+    }
+
+    .section-label {
+        grid-column: 1 / -1;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+    }
+
+    .form-footer {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 8px;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 4px;
+    }
+
+    .btn-cancel {
+        background: #fff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        padding: 10px 22px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-cancel:hover { background: #f1f5f9; border-color: #94a3b8; }
+
+    .btn-save {
+        background: #f59e0b;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 28px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.03em;
+        transition: background 0.15s;
+    }
+
+    .btn-save:hover { background: #d97706; }
+
+    .empty-state {
+        padding: 48px 28px;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <a class="back-link" href="/job/{{ job.company }}/{{ job.position }}/{{ job.location }}">&larr; Back</a>
+        <div class="header-titles">
+            <h1>Edit Application</h1>
+            <p>{{ job.company }} &mdash; {{ job.position }}</p>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    {% if job %}
+    <div class="form-card">
+        <h2>Edit Job Application</h2>
+        <form method="POST" action="/edit/{{ job.company }}/{{ job.position }}/{{ job.location }}" enctype="multipart/form-data">
+            <div class="form-grid">
+
+                <span class="section-label">Identity (read-only)</span>
+
+                <div class="form-field">
+                    <label>Company</label>
+                    <div class="readonly-value">{{ job.company }}</div>
+                </div>
+                <div class="form-field">
+                    <label>Position</label>
+                    <div class="readonly-value">{{ job.position }}</div>
+                </div>
+                <div class="form-field">
+                    <label>Location</label>
+                    <div class="readonly-value">{{ job.location }}</div>
+                </div>
+
+                <hr class="section-divider">
+                <span class="section-label">Details</span>
+
+                <div class="form-field">
+                    <label>Level</label>
+                    <select name="level" required>
+                        <option value="" disabled>Select level</option>
+                        <option value="Intern" {% if job.level == "Intern" %}selected{% endif %}>Intern</option>
+                        <option value="Entry" {% if job.level == "Entry" %}selected{% endif %}>Entry</option>
+                        <option value="Junior" {% if job.level == "Junior" %}selected{% endif %}>Junior</option>
+                        <option value="Mid" {% if job.level == "Mid" %}selected{% endif %}>Mid</option>
+                        <option value="Senior" {% if job.level == "Senior" %}selected{% endif %}>Senior</option>
+                        <option value="Lead" {% if job.level == "Lead" %}selected{% endif %}>Lead</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Status</label>
+                    <select name="status" required>
+                        <option value="" disabled>Select status</option>
+                        <option value="not applied" {% if job.status == "not applied" %}selected{% endif %}>Not Applied</option>
+                        <option value="applied" {% if job.status == "applied" %}selected{% endif %}>Applied</option>
+                        <option value="interview" {% if job.status == "interview" %}selected{% endif %}>Interview</option>
+                        <option value="offer" {% if job.status == "offer" %}selected{% endif %}>Offer</option>
+                        <option value="rejected" {% if job.status == "rejected" %}selected{% endif %}>Rejected
+                            
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label>Apply Date</label>
+                    <input name="date_applied" type="date" value="{{ job.date_applied }}" required>
+                </div>
+
+                <div class="form-field">
+                    <label>Salary</label>
+                    <input name="salary" placeholder="e.g. 100000" value="{{ job.salary | int if job.salary is not none else '' }}" required>
+                </div>
+
+                <div class="form-field">
+                    <label>Posting Link</label>
+                    <input name="posting_link" placeholder="e.g. https://company.com/jobs/123" value="{{ job.posting_link or '' }}">
+                </div>
+
+                <div class="form-field full-width">
+                    <label>Job Description</label>
+                    <textarea name="description" rows="4" placeholder="e.g. Working with Python...">{{ job.description or '' }}</textarea>
+                </div>
+
+                <div class="form-field full-width">
+                    <label>Note</label>
+                    <textarea name="note" rows="3" placeholder="e.g. Follow up needed">{{ job.note or '' }}</textarea>
+                </div>
+
+                <div class="form-field full-width file-input-wrapper">
+                    <label>CV / Resume (PDF)</label>
+                    <input type="hidden" name="existing_cv" value="{{ job.cv_path or '' }}">
+                    {% if job.cv_path %}
+                    <div class="cv-current">
+                        <a href="{{ url_for('serve_cv', filename=job.cv_path) }}">Current CV (download)</a>
+                        <label class="cv-remove-label">
+                            <input type="checkbox" name="remove_cv"> Remove
+                        </label>
+                    </div>
+                    <span class="file-hint">Upload a new file to replace the current CV</span>
+                    {% else %}
+                    <span class="file-hint">Optional — PDF only</span>
+                    {% endif %}
+                    <input type="file" name="cv" accept=".pdf">
+                </div>
+
+                <div class="form-footer">
+                    <a class="btn-cancel" href="/job/{{ job.company }}/{{ job.position }}/{{ job.location }}">Cancel</a>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <div class="form-card">
+        <div class="empty-state">Job not found.</div>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

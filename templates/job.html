@@ -78,7 +78,7 @@
     .status-applied      { background: #e0f2fe; color: #0369a1; }
     .status-interview    { background: #fef3c7; color: #b45309; }
     .status-offer        { background: #dcfce7; color: #15803d; }
-    .status-reject       { background: #fee2e2; color: #b91c1c; }
+    .status-rejected       { background: #fee2e2; color: #b91c1c; }
 
     /* Main detail card */
     .detail-card {
@@ -149,7 +149,6 @@
 
     .field-value.empty { color: #94a3b8; font-style: italic; }
 
-    /* Description / Note full-width rows */
     .full-width { grid-column: 1 / -1; }
 
     .field-value.multiline {
@@ -163,6 +162,50 @@
         text-align: center;
         color: #94a3b8;
         font-size: 0.9rem;
+    }
+
+    .card-footer {
+        padding: 16px 28px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .btn-edit, .btn-delete {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 7px 18px;
+        border-radius: 5px;
+        border: 1.5px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .btn-edit {
+        background: #0ea5e9;
+        color: #fff;
+        border-color: #0ea5e9;
+    }
+
+    .btn-edit:hover {
+        background: #0284c7;
+        border-color: #0284c7;
+    }
+
+    .btn-delete {
+        background: #fff;
+        color: #b91c1c;
+        border-color: #fca5a5;
+    }
+
+    .btn-delete:hover {
+        background: #fee2e2;
+        border-color: #f87171;
     }
     </style>
 </head>
@@ -223,6 +266,15 @@
                 </span>
             </div>
 
+            <div class="field-group">
+                <span class="field-label">CV / Resume</span>
+                <span class="field-value">
+                    {% if j.cv_path %}
+                    <a href="{{ url_for('serve_cv', filename=j.cv_path) }}">Download PDF</a>
+                    {% else %}—{% endif %}
+                </span>
+            </div>
+
             <div class="field-group full-width">
                 <span class="field-label">Job Description</span>
                 <span class="field-value multiline">{{ j.description or "No description provided." }}</span>
@@ -234,6 +286,14 @@
                     {{ j.note or "No notes." }}
                 </span>
             </div>
+
+        </div>
+
+        <div class="card-footer">
+            <a href="{{ url_for('show_edit_form', company=j.company, position=j.position, location=j.location) }}" class="btn-edit">Edit</a>
+            <form action="{{ url_for('delete_job', company=j.company, position=j.position, location=j.location) }}" method="post">
+                <button type="submit" class="btn-delete" onclick="return confirm('Delete this application?');">Delete</button>
+            </form>
         </div>
     </div>
     {% else %}
